@@ -1,0 +1,32 @@
+(()=> {
+    const registerForm = document.querySelector('.register-card form');
+
+
+    registerForm.addEventListener('submit',async(e) => {
+        e?.preventDefault();
+
+        const email = document.querySelector('.email').value;
+        const password= document.querySelector('.password').value;
+
+
+        if ( !email || !password) return showToaster('Please fill all fields')
+
+        try {
+            const user = await auth.signInWithEmailAndPassword(email,password)
+
+            const profile = await db.collection('profile').doc(user?.user?.uid).get()
+
+            if (profile?.exists) {
+                if (profile.data()?.role === 'user') {
+                    window.location.href="../dashboard/index.html"
+                }
+            }
+            console.log(profile);
+            showToaster('LoggedIn',true)
+        } catch (error) {
+            showToaster(error?.message)
+            console.log(error);
+        }
+
+    })
+})()
